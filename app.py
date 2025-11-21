@@ -3,19 +3,11 @@ from PIL import Image
 import numpy as np
 import tensorflow as tf
 import plotly.express as px
-import gdown
-from tensorflow.keras.applications import VGG16
-
 
 # Load your trained model
-
+model = tf.keras.models.load_model('landClassification.tflite')
 class_names = ['AnnualCrop','Forest','HerbaceousVegetation','Highway','Industrial',
                'Pasture','PermanentCrop','Residential','River','SeaLake']
-
-url = "https://drive.google.com/uc?id=1qxKdxIZXUcgP3RosR5SevD65dIQDVi9Q"
-output = "landClassification_vgg16_model.h5"
-gdown.download(url, output, quiet=False)
-model = tf.keras.models.load_model(output, custom_objects={'Functional': tf.keras.Model})
 
 st.title("EuroSAT Land Type Classifier")
 st.write("Upload a satellite image to classify its land type.")
@@ -39,6 +31,3 @@ if uploaded_file is not None:
     prob_df = {"Class": class_names, "Probability": predictions[0]}
     fig = px.bar(prob_df, x="Class", y="Probability", text="Probability")
     st.plotly_chart(fig)
-
-
-
